@@ -26,3 +26,5 @@ create table budget(
 select type, SUM(amount) as "total" from expenses group by type order by total desc;
 
 select * from expenses where extract(month from date)=7;
+
+select type, SUM (amount) as "total" from expenses where extract(month from date)=7 group by type ;

@@ -61,15 +61,27 @@ app.get('/expenses/categories', async(req,res) => {
   }
 })
 
-app.get('/expenses/categories/top2', async(req,res) => {
+app.get('/expenses/categories/7', async(req,res) => {
   try {
-    const categories = await db.query('select type, SUM(amount) as "total" from expenses group by type order by total desc;') 
-    res.json(categories.rows.slice(0,2))
+    const categories = await db.query('select type, SUM (amount) as "total" from expenses where extract(month from date)=7 group by type ;') 
+    res.json(categories.rows)
   } catch (error) {
     console.error(error.message)
     
   }
 })
+
+// app.get('/expenses/categories/7', async(req,res) => {
+//   try {
+//     const categories = await db.query('select type, SUM(amount) as "total" from expenses group by type order by total desc where extract(month from date) = 7 ;') 
+//     res.json(categories.rows)
+//   } catch (error) {
+//     console.error(error.message)
+    
+//   }
+// })
+
+
 
 app.get('/expenses/:id', async(req,res) => {
   try {
@@ -153,6 +165,8 @@ app.get('/incomes/categories', async(req,res) => {
     
   }
 })
+
+
 
 // app.get('/incomes/categories/top2', async(req,res) => {
 //   try {
