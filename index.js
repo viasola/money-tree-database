@@ -1,8 +1,7 @@
-
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const db = require('./database/database')
+const db = require('./database')
 
 app.use(cors())
 app.use(express.json())
@@ -23,6 +22,17 @@ app.get('/expenses', async(req,res) => {
   try {
     const allExpenses = await db.query('select * from expenses order by date desc;') 
     res.json(allExpenses.rows)
+  } catch (error) {
+    console.error(error.message)
+    
+  }
+})
+
+app.get('/expenses/current', async(req,res) => {
+  try {
+    
+    const currentMonth = await db.query(`select * from expenses where date >= date_trunc('month',CURRENT_DATE);`) 
+    res.json(currentMonth.rows)
   } catch (error) {
     console.error(error.message)
     
@@ -187,6 +197,22 @@ app.delete('/incomes/:id', async(req,res) => {
   } catch (error) {
     console.error(error.message)
   }
+})
+
+
+
+app.get('/budget', (req,res) => {
+  db.query('select * from budget', (err,dbRes) => {
+    res.json(dbRes.rows)
+  })
+})
+
+app.put('/budget/:id', (req,res) => {
+  const {id} = req.params
+  const {budget_amount} = req.body
+  db.query('update budget set budget_amount = $1 where id = $2;',[budget_amount,id], (err,dbRes) => {
+    res.json('updated')
+  })
 })
 
 
